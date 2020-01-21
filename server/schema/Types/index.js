@@ -1,6 +1,6 @@
 const graphql = require('graphql');
 const { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLList } = graphql;
-const {directors, movies} = require('../../fakeDB/index');
+const {DirectorModel, MovieModel} = require('../../models/index');
 
 
 const Movie = new GraphQLObjectType({
@@ -12,8 +12,7 @@ const Movie = new GraphQLObjectType({
         director: {
             type: Director,
             resolve(parent, args) {
-                console.log('PARENT: ', parent);
-                return directors.find(director => director.id == parent.directorId);
+                return DirectorModel.findById(parent.directorId);
             }
         }
     }),
@@ -28,7 +27,7 @@ const Director = new GraphQLObjectType({
         movies: {
             type: new GraphQLList(Movie),
             resolve ( parent, args ) {
-                 return movies.filter(movie => movie.directorId == parent.id)
+                 return MovieModel.find({ directorId: parent.id });
             }
         }
     }),
